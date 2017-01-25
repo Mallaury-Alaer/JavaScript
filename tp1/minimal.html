@@ -1,0 +1,49 @@
+<html>
+  <body>
+    <script>
+    /*
+    var a = true;
+    if(typeof a === 'number'){
+    	console.log(a + ' est un nombre');
+    }else if(typeof a === 'boolean'){
+    	console.log(a+' est un boolean');
+    }else if(typeof a === 'string'){
+    	console.log(a + ' est une chaine de caracteres');
+    }
+    */
+    var t = [ 35, true, function(){return 42},{name: 'toto'}];
+
+    /*
+    for(var i = 0; i<t.length; i++)
+    	console.log(t[i]);
+    
+    console.log(t[2]());
+
+    // pour une fonction: var f = {code fonction}, pour l'appeler: f()
+
+    console.log(t[3].name);
+
+    t.push(12);
+    console.log('Apres push: ' + t.toString());
+    t.pop();
+    console.log('Apres pop: '+t.toString());
+
+    t = t.slice(2,4);
+    console.log(t.toString());
+	*/
+
+	function keepFunction(){
+		var tmp = [];
+		for(var i = 0; i<t.length; i++){
+			if(typeof t[i] === 'function')
+				tmp.push(t[i]);
+		}
+		t=tmp;
+	}
+
+	keepFunction();
+	console.log(t.toString());
+
+    </script>
+  </body>
+</html>
