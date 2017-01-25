@@ -54,6 +54,8 @@
 
 	// calcul le nombre de cellules vivantes autour de la cellule de coordonnées (lig, col)
 
+  //Gerer le cas premiere ligne/colone, derniere
+
 	var voisins = function(lig, col) {
     	var nbVoisins = 0;
     		for(var i = lig-1; i<=lig+1; i++){
