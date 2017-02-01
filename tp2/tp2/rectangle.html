@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset = "utf-8">
+        <title>Rectangles</title>
+    </head>
+    
+    <body>
+        <canvas id = "essai1"></canvas>
+        <script type = "text/javascript">
+            // récupération de l'élément canvas sur lequel faire les dessins
+            var canvas = document.getElementById("essai1");
+            canvas.width = 1500;
+            canvas.height = 1000;
+            // récupération du contexte graphique
+            var gfx = canvas.getContext("2d");
+            // changement de la couleur utilisé pour les dessins de figures pleines
+            gfx.fillStyle = 'rgb(155,200,122)';
+            // affichage d'un rectangle plein sur l'ensemble du canvas
+            gfx.fillRect(10,10,100, 100);
+            
+            var random = function getRandomInt(min, max) {
+              min = Math.ceil(min);
+              max = Math.floor(max);
+              return Math.floor(Math.random() * (max - min)) + min;
+            }
+            
+            for (var i=0; i<100; i++) {
+                // tirage aléatoire de la couleur
+                var r = random(0,255);
+                var g = random(0,255);
+                var b = random(0,255);
+                gfx.fillStyle = 'rgb('+r+','+g+','+b+')';
+                // dessin d'un rectable placé aléatoirement sur le canvas
+                gfx.fillRect(random(0, canvas.width),random(0, canvas.height),30,30);
+            }
+            
+
+            undefined;
+        </script>
+        
+    </body>
+</html>
