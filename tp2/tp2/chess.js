@@ -34,14 +34,16 @@ var createBoard = function(nbLine, nbColumn){
         if(i>0){y+=75;}
         x=0;
         for(var j = 0; j<nbColumn; j++){
-            if(i%2==0 && j%2 == 0){
-                gfx.fillStyle = 'darkgrey';
-            }else if (i%2 !=0 && j%2 == 0){
-                gfx.fillStyle = 'lightgrey';
-            }else if (i%2==0 && j%2 != 0){
-                gfx.fillStyle = 'darkgrey';
-            }else if (i%2 !=0 && j%2 !=0){
-                gfx.fillStyle = 'lightgrey';
+            if(i%2 == 0){
+                if(j%2==0)
+                    gfx.fillStyle = 'lightgrey';
+                if(j%2 != 0)
+                    gfx.fillStyle = 'darkgrey';
+            }else if(i%2!=0){
+                if(j%2 == 0)
+                    gfx.fillStyle = 'darkgrey';
+                else if(j%2 != 0)
+                    gfx.fillStyle = 'lightgrey';
             }
             gfx.strokeRect(x, y, 75,75);
             gfx.fillRect(x,y,75,75);
@@ -49,12 +51,59 @@ var createBoard = function(nbLine, nbColumn){
         }
     }
 };
-//var isEmpty = function(lig, col)
-//var put = function(lig, col, piece)
+var isEmpty = function(lig, col){
+    if(tab_pieces[lig][col] == null)
+        return true;
+    else
+        return false;
+}
+
+var put = function(lig, col, piece){
+    if(isEmpty(lig, col)){
+        tab_piece[lig][col] = piece;
+    }
+}
 
 var board = createBoard(8, 8);
 
-//var initBoard = function() // avec les pièces du jeu
+//Creer les pieces correspondantes avec l'instance piece
+var initBoard = function(){// avec les pièces du jeu
+    var chessSymbols = new Image();
+    chessSymbols.src = 'chess.png';
+    
+    chessSymbols.onload = function(){
+        console.info('Chess Symbols loaded !');
+        //Dessin des pions
+        var cpt = 0;
+        for(var i = 0; i<8; i++){
+            gfx.drawImage(chessSymbols,0,0,75,75,cpt,75,70,70);
+            gfx.drawImage(chessSymbols,475,0,75,75,cpt, 450,70,70);
+            cpt+=75;
+        }
+        
+        var a = 0;
+        var b = 75;
+        var c = 150;
+        for(var i = 0; i<2;i++){
+            //Dessin des tours
+            gfx.drawImage(chessSymbols,240,0,75,75,a,0,70,70);
+            gfx.drawImage(chessSymbols,715,0,75,75,a, 525,70,70);
+            a+=75*7;
+            //Dessin des cavaliers
+            gfx.drawImage(chessSymbols,75,0,75,75,b,0,70,70);
+            gfx.drawImage(chessSymbols,550,0,75,75,b, 525,70,70);
+            b+=75*5;
+            //Dessin des fous
+            gfx.drawImage(chessSymbols,160,0,75,75,c,0,70,70);
+            gfx.drawImage(chessSymbols,640,0,75,75,c, 525,70,70);
+            c+=75*3;
+        }
+        gfx.drawImage(chessSymbols,320,0,75,75,225,0,70,70);
+        gfx.drawImage(chessSymbols,800,0,75,75,225, 525,70,70);
+        gfx.drawImage(chessSymbols,395,0,80,75,300,0,70,70);
+        gfx.drawImage(chessSymbols,875,0,80,75,300, 525,70,70); 
+    }
+} 
 
 var convertCoordinates = function(ligPixel, colPixel) {
     var lig = Math.ceil(ligPixel / (canvas.height/8)) - 1;
@@ -96,7 +145,7 @@ function mouseClicked(event) {
 }
 
 // initialise le plateau en déposant les pièces de deux joueurs au début de la partie
-//initBoard();
+initBoard();
 
 // Pour dessiner le plateau, on spécifie le coin supérieur gauche, la 
 // largeur et la hauteur. Dans cette fonction, on appelle drawCell 
