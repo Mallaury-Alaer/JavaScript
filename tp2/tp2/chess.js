@@ -26,84 +26,148 @@ var Pawn = function(color, line, column) {
 }
 Pawn.prototype = new Piece();
 
+var King = function(color, line, column){
+    Piece.prototype.constructor.call(this,'King', color, line, column);
+    this.pieceId = [[400, 5], [880, 5]];
+}
+King.prototype = new Piece();
+
+var Queen = function(color, line, column){
+    Piece.prototype.constructor.call(this, 'Queen', color, line, column);
+    this.pieceId = [[320, 5], [802, 5,]];
+}
+Queen.prototype = new Piece();
+
+//Tour
+var Rook = function (color, line, column){
+    Piece.prototype.constructor.call(this, 'Rook', color, line, column);
+    this.pieceId = [[240, 5], [720, 5]];
+}
+Rook.prototype = new Piece();
+
+//Fou
+var Bishop = function(color, line, column){
+    Piece.prototype.constructor.call(this, 'Bishop', color, line, column);
+    this.pieceId = [[160, 5], [640, 5]];
+}
+Bishop.prototype = new Piece();
+
+//Cavalier
+var Knight = function(color, line, column){
+    Piece.prototype.constructor.call(this, 'Knight', color, line, column);
+    this.pieceId = [[80, 5], [560, 5]];
+}
+Knight.prototype = new Piece();
+
 var createBoard = function(nbLine, nbColumn){
-    var x = 0;
-    var y =0;
-    gfx.strokeStyle = 'black';
+    var tab = [];
     for(var i = 0; i<nbLine; i++){
-        if(i>0){y+=75;}
-        x=0;
         for(var j = 0; j<nbColumn; j++){
-            if(i%2 == 0){
-                if(j%2==0)
-                    gfx.fillStyle = 'lightgrey';
-                if(j%2 != 0)
-                    gfx.fillStyle = 'darkgrey';
-            }else if(i%2!=0){
-                if(j%2 == 0)
-                    gfx.fillStyle = 'darkgrey';
-                else if(j%2 != 0)
-                    gfx.fillStyle = 'lightgrey';
-            }
-            gfx.strokeRect(x, y, 75,75);
-            gfx.fillRect(x,y,75,75);
-            x+=75;
+            tab.push(new Piece('empty', null, i,j));
         }
     }
+    return tab;
 };
-var isEmpty = function(lig, col){
-    if(tab_pieces[lig][col] == null)
-        return true;
-    else
-        return false;
-}
-
-var put = function(lig, col, piece){
-    if(isEmpty(lig, col)){
-        tab_piece[lig][col] = piece;
-    }
-}
 
 var board = createBoard(8, 8);
 
-//Creer les pieces correspondantes avec l'instance piece
-var initBoard = function(){// avec les pièces du jeu
+var isEmpty = function(lig, col){
+    for(var i=0; i<64; i++){
+	if(board[i].line == lig && board[i].column == col && board[i].name == 'empty')
+	    return true;
+    }
+    return false;
+}
+
+var put = function(lig, col, piece){
+    for(var i=0; i<64; i++){
+	if(board[i].line == lig && board[i].column == col && isEmpty(lig, col))
+	    board[i] = piece;
+    }
+}
+
+var initBoard = function(){
     var chessSymbols = new Image();
     chessSymbols.src = 'chess.png';
     
     chessSymbols.onload = function(){
         console.info('Chess Symbols loaded !');
-        //Dessin des pions
-        var cpt = 0;
-        for(var i = 0; i<8; i++){
-            gfx.drawImage(chessSymbols,0,0,75,75,cpt,75,70,70);
-            gfx.drawImage(chessSymbols,475,0,75,75,cpt, 450,70,70);
-            cpt+=75;
+        drawGrid(0,0, canvas.width, canvas.height, 8, 8); 
+        
+        /*PAWNS*/ 
+        //WHITE
+        for(var i = 8; i<16; i++){
+            board[i] = new Pawn('white', 1,(i-8));
+            gfx.drawImage(chessSymbols, board[i].pieceId[0][0], board[i].pieceId[0][1], 75, chessSymbols.height, ((canvas.width/8)*(i-8)), canvas.height/8, 75, chessSymbols.height);
         }
         
-        var a = 0;
-        var b = 75;
-        var c = 150;
-        for(var i = 0; i<2;i++){
-            //Dessin des tours
-            gfx.drawImage(chessSymbols,240,0,75,75,a,0,70,70);
-            gfx.drawImage(chessSymbols,715,0,75,75,a, 525,70,70);
-            a+=75*7;
-            //Dessin des cavaliers
-            gfx.drawImage(chessSymbols,75,0,75,75,b,0,70,70);
-            gfx.drawImage(chessSymbols,550,0,75,75,b, 525,70,70);
-            b+=75*5;
-            //Dessin des fous
-            gfx.drawImage(chessSymbols,160,0,75,75,c,0,70,70);
-            gfx.drawImage(chessSymbols,640,0,75,75,c, 525,70,70);
-            c+=75*3;
+        //BLACK
+        for(var i = 48; i<56; i++){
+            board[i] = new Pawn('black', 6, (i-48));
+            gfx.drawImage(chessSymbols, board[i].pieceId[1][0], board[i].pieceId[1][1], 75, chessSymbols.height, ((canvas.width/8)*(i-48)), (canvas.height/8)*6, 75, chessSymbols.height);
         }
-        gfx.drawImage(chessSymbols,320,0,75,75,225,0,70,70);
-        gfx.drawImage(chessSymbols,800,0,75,75,225, 525,70,70);
-        gfx.drawImage(chessSymbols,395,0,80,75,300,0,70,70);
-        gfx.drawImage(chessSymbols,875,0,80,75,300, 525,70,70); 
+        
+        /*KING*/
+        //WHITE
+        board[3] = new King('white', 0, 3);
+        gfx.drawImage(chessSymbols, board[3].pieceId[0][0], board[3].pieceId[0][1],75, chessSymbols.height, (canvas.width/8)*3, 0, 75, chessSymbols.height);
+        
+        //BLACK
+        board[59] = new King('black', 7,3);
+        gfx.drawImage(chessSymbols, board[59].pieceId[1][0], board[59].pieceId[1][1], 75, chessSymbols.height, ((canvas.width/8)*3), canvas.height-(canvas.height/8), 75, chessSymbols.height);
+        
+        /*QUEEN*/
+        //WHITE
+        board[4] = new Queen('white', 0,4);
+        gfx.drawImage(chessSymbols, board[4].pieceId[0][0], board[4].pieceId[0][1],75, chessSymbols.height, (canvas.width/8)*4, 0, 75, chessSymbols.height);
+
+        //BLACK
+        board[60] = new Queen('black', 7, 4);
+        gfx.drawImage(chessSymbols, board[60].pieceId[1][0], board[60].pieceId[1][1], 75, chessSymbols.height, ((canvas.width/8)*4), canvas.height-(canvas.height/8), 75, chessSymbols.height);
+        
+        /*ROOK*/
+        //WHITE
+        board[0] = new Rook('white', 0, 0);
+        board[7] = new Rook('white', 0, 7);
+        gfx.drawImage(chessSymbols, board[0].pieceId[0][0], board[0].pieceId[0][1],75, chessSymbols.height, 0, 0, 75, chessSymbols.height);
+        gfx.drawImage(chessSymbols, board[7].pieceId[0][0], board[7].pieceId[0][1],75, chessSymbols.height, (canvas.width/8)*7, 0, 75, chessSymbols.height);
+        
+        //BLACK
+        board[56] = new Rook('black', 7, 0);
+        board[63] = new Rook('black', 7, 7);
+        gfx.drawImage(chessSymbols, board[56].pieceId[1][0], board[56].pieceId[1][1], 75, chessSymbols.height, 0, canvas.height-(canvas.height/8), 75, chessSymbols.height);
+        
+        gfx.drawImage(chessSymbols, board[63].pieceId[1][0], board[63].pieceId[1][1], 75, chessSymbols.height, (canvas.width/8)*7, canvas.height-(canvas.height/8), 75, chessSymbols.height);
+        
+        /*BISHOP*/
+        //WHITE
+        board[2] = new Bishop('white', 0, 2);
+        board[5] = new Bishop('white', 0, 5);
+        gfx.drawImage(chessSymbols, board[2].pieceId[0][0], board[2].pieceId[0][1],75, chessSymbols.height, (canvas.width/8)*2, 0, 75, chessSymbols.height);
+        gfx.drawImage(chessSymbols, board[5].pieceId[0][0], board[5].pieceId[0][1],75, chessSymbols.height, (canvas.width/8)*5, 0, 75, chessSymbols.height);
+
+        //BLACK
+        board[58] = new Bishop('black', 7, 2);
+        board[61] = new Bishop('black', 7, 5);
+        gfx.drawImage(chessSymbols, board[58].pieceId[1][0], board[58].pieceId[1][1], 75, chessSymbols.height, ((canvas.width/8)*2), canvas.height-(canvas.height/8), 75, chessSymbols.height);
+        gfx.drawImage(chessSymbols, board[61].pieceId[1][0], board[61].pieceId[1][1], 75, chessSymbols.height, (canvas.width/8)*5, canvas.height-(canvas.height/8), 75, chessSymbols.height);
+        
+        /*KNIGHT*/
+        //WHITE
+        board[1] = new Knight('white', 0, 1);
+        board[6] = new Knight('white', 0, 6);
+        gfx.drawImage(chessSymbols, board[1].pieceId[0][0], board[1].pieceId[0][1],75, chessSymbols.height, canvas.width/8, 0, 75, chessSymbols.height);
+        gfx.drawImage(chessSymbols, board[6].pieceId[0][0], board[6].pieceId[0][1],75, chessSymbols.height, (canvas.width/8)*6, 0, 75, chessSymbols.height);
+        
+        //BLACK
+        board[57] = new Knight('black', 7, 1);
+        board[64] = new Knight('black', 7, 6);
+        gfx.drawImage(chessSymbols, board[57].pieceId[1][0], board[57].pieceId[1][1], 75, chessSymbols.height, canvas.width/8, canvas.height-(canvas.height/8), 75, chessSymbols.height);
+        gfx.drawImage(chessSymbols, board[64].pieceId[1][0], board[64].pieceId[1][1], 75, chessSymbols.height, (canvas.width/8)*6, canvas.height-(canvas.height/8), 75, chessSymbols.height);
+        
+        
     }
-} 
+}
 
 var convertCoordinates = function(ligPixel, colPixel) {
     var lig = Math.ceil(ligPixel / (canvas.height/8)) - 1;
@@ -145,9 +209,31 @@ function mouseClicked(event) {
 }
 
 // initialise le plateau en déposant les pièces de deux joueurs au début de la partie
+
 initBoard();
 
 // Pour dessiner le plateau, on spécifie le coin supérieur gauche, la 
 // largeur et la hauteur. Dans cette fonction, on appelle drawCell 
 // pour dessiner une cellule à une coordonnée donnée.
-//var drawGrid = function(x, y, width, height, nbLig, nbCol) {
+var drawGrid = function(x, y, width, height, nbLig, nbCol) {
+    var t = height/nbLig;
+    var u = width/nbCol;
+    var n = -1;
+    
+    gfx.strokeStyle = 'black';
+    gfx.fillStyle= 'rgd(0,0,0)';
+    gfx.fillRect(0,0,width, height);
+    for(var i = x; i<height; i+=t){
+	n++;
+	for(var j = y; j<width; j+=u){
+	    if(n%2 != 0)
+		  gfx.fillStyle = 'lightgrey';
+	    else
+            gfx.fillStyle = 'darkgrey';
+	    
+	    gfx.fillRect(j+2, i+2, t-4, u-4);
+	    n++;
+	}
+    }
+    
+}
